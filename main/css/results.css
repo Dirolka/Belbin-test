@@ -160,9 +160,50 @@ body {
 
 .summary-text {
   margin: 0;
-  font-size: 14px;
+  font-size: 17px;
   line-height: 1.6;
   color: #333;
+}
+
+.summary-plan{
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.6;
+  color: #333;
+}
+
+.btn-primary{
+  border: none;
+  outline: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 20px 10px;
+  min-width: 0;
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 500;
+  background-color: #6b4eff;
+  color: #ffffff;
+  border-radius: 0;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.btn-primary:hover {
+  background-color: #5135d4;
+  transform: translateY(-1px);
+}
+
+.btn-text {
+  white-space: nowrap;
+}
+
+.btn-icon {
+  font-size: 16px;
+  align-self: start;
 }
 
 /* RESPONSIVE */
