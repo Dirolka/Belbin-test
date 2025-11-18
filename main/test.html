@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профориентационный тест — вопросы</title>
+    <!-- можно использовать тот же стиль, что и для регистрации -->
+    <link rel="stylesheet" href="css/test.css?v=8">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="brand-row">
+                <img src="img/Logo_1.png" alt="Логотип" class="brand-logo">
+                <div class="brand-text">
+                    <h1 class="title">Профориентационный тест</h1>
+                    <p class="subtitle">Ответьте на вопросы, выбирая степень согласия</p>
+                </div>
+            </div>
+        </header>
+
+        <main class="main">
+            <div class="registration-card" id="testCard">
+                <h2 class="card-title">Тест</h2>
+
+                <div id="questionBlock" class="form-group">
+                    <p id="questionText" class="form-label"></p>
+
+                    <div id="answers" class="form-group">
+                        <div class="form-group">
+                            <label>
+                                <input type="radio" name="answer" value="1">
+                                1 — совсем не про меня
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="radio" name="answer" value="2">
+                                2 — скорее нет
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="radio" name="answer" value="3">
+                                3 — частично да
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="radio" name="answer" value="4">
+                                4 — похоже на меня
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="radio" name="answer" value="5">
+                                5 — точно про меня
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" style="display: flex; justify-content: space-between; margin-top: 20px;">
+                    <button id="prevBtn" class="btn btn-secondary" type="button">Назад</button>
+                    <button id="nextBtn" class="btn btn-primary" type="button">Далее</button>
+                </div>
+
+                <p id="progress" class="subtitle" style="margin-top: 10px;"></p>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/test.js"></script>
+</body>
+</html>

@@ -1,0 +1,187 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+  background-color: #f5f5f7;
+  color: #151515;
+}
+
+.page {
+  min-height: 100vh;
+  padding: 32px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* HEADER */
+
+.header {
+  width: 100%;
+  max-width: 1080px;
+  margin-bottom: 32px;
+}
+
+.brand-row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.brand-logo {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.subtitle {
+  margin: 0;
+  max-width: 640px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #585858;
+}
+
+/* MAIN LAYOUT */
+
+.main {
+  width: 100%;
+  max-width: 1080px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* GRID OF CARDS */
+
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.result-card,
+.summary-card {
+  background-color: #ffffff;
+  border: 1px solid #e3e3e3;
+  border-radius: 16px;
+  padding: 24px 24px 20px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+}
+
+/* TITLES / TEXT */
+
+.result-title {
+  margin: 0 0 12px;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.result-score {
+  margin: 0 0 4px;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.score-value {
+  font-weight: 600;
+  color: #2563eb; /* синий акцент */
+}
+
+.result-note {
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: #787878;
+}
+
+.result-interpretation h3 {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #444;
+}
+
+.ranges-list {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ranges-list li {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* SUMMARY / OVERALL BLOCK */
+
+.summary-card {
+  margin-top: 4px;
+}
+
+.summary-lead {
+  margin: 0 0 12px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.summary-subtitle {
+  margin: 16px 0 4px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #444;
+}
+
+.summary-text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+  .page {
+    padding: 20px 12px;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+
+  .brand-row {
+    align-items: flex-start;
+  }
+
+  .result-card,
+  .summary-card {
+    padding: 20px 18px 18px;
+  }
+}
