@@ -7,11 +7,11 @@ html,
 body {
   margin: 0;
   padding: 0;
-  height: 200%;
+  height: 100%;
 }
 
 body {
-  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   color: #111111;
   -webkit-font-smoothing: antialiased;
   /* Clean gradient background with subtle purple tint to match logo */
@@ -82,6 +82,9 @@ body {
   background-color: #ffffff;
   border: 1px solid #e3e3e3;
   padding: 32px 32px 28px;
+  border-radius: 16px;
+  overflow: hidden;
+
 }
 
 .registration-card {
@@ -89,7 +92,7 @@ body {
   flex-direction: column;
   gap: 24px;
   max-width: 1070px;
-  width: 310%;
+  width: 100%;
   padding: 40px 60px;
 }
 
@@ -274,6 +277,18 @@ body {
 
   .subtitle {
     font-size: 13px;
+  }
+
+  .registration-card {
+    padding: 20px 16px;
+  }
+
+  #questionText {
+    font-size: 18px;
+  }
+
+  #answers label {
+    font-size: 18px;
   }
 }
 

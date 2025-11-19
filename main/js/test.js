@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const questionTextEl = document.getElementById('questionText');
     const progressEl = document.getElementById('progress');
     const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
 
     function renderQuestion() {
         questionTextEl.textContent = questions[currentIndex];
@@ -32,12 +31,46 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         prevBtn.disabled = currentIndex === 0;
-        nextBtn.textContent = currentIndex === questions.length - 1 ? 'Завершить' : 'Далее';
     }
 
     function getSelectedAnswer() {
         const selected = document.querySelector('input[name="answer"]:checked');
         return selected ? selected.value : null;
+    }
+
+    function goNextIfPossible() {
+        const answer = getSelectedAnswer();
+        if (answer === null) {
+            return;
+        }
+
+        answers[currentIndex] = answer;
+
+        if (currentIndex < questions.length - 1) {
+            currentIndex++;
+            renderQuestion();
+        } else {
+            const numericAnswers = answers.map((a) => Number(a) || 0);
+
+            const finisherQuestions = [1, 2, 4, 5, 7, 9, 10, 11];
+            const specialistQuestions = [3, 6, 8, 12];
+
+            const sumByQuestions = (questionNumbers) =>
+                questionNumbers.reduce((sum, qNum) => {
+                    const index = qNum - 1;
+                    return sum + (numericAnswers[index] || 0);
+                }, 0);
+
+            const finisher = sumByQuestions(finisherQuestions);
+            const specialist = sumByQuestions(specialistQuestions);
+
+            localStorage.setItem(
+                'testScores',
+                JSON.stringify({ finisher, specialist })
+            );
+
+            window.location.href = 'resulsts.html';
+        }
     }
 
     prevBtn.addEventListener('click', () => {
@@ -47,52 +80,30 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (currentIndex > 0) {
+            if (autoNextTimeoutId !== null) {
+                clearTimeout(autoNextTimeoutId);
+                autoNextTimeoutId = null;
+            }
             currentIndex--;
             renderQuestion();
         }
     });
 
-    nextBtn.addEventListener('click', () => {
-    const answer = getSelectedAnswer();
-    if (answer === null) {
-        alert('Пожалуйста, выберите вариант ответа.');
-        return;
-    }
+    let autoNextTimeoutId = null;
 
-    answers[currentIndex] = answer;
+    const answerRadios = document.querySelectorAll('input[name="answer"]');
+    answerRadios.forEach((radio) => {
+        radio.addEventListener('change', () => {
+            if (autoNextTimeoutId !== null) {
+                clearTimeout(autoNextTimeoutId);
+            }
 
-    if (currentIndex < questions.length - 1) {
-        currentIndex++;
-        renderQuestion();
-    } else {
-        // === СЧИТАЕМ БАЛЛЫ И СОХРАНЯЕМ ===
-        const numericAnswers = answers.map((a) => Number(a) || 0);
+            autoNextTimeoutId = setTimeout(() => {
+                goNextIfPossible();
+                autoNextTimeoutId = null;
+            }, 1100);
+        });
+    });
 
-        // вопросы считаем с 1:
-        // 1,2,4,5,7,9,10,11 → Доводчик
-        // 3,6,8,12          → Специалист
-
-        const finisherQuestions = [1, 2, 4, 5, 7, 9, 10, 11];
-        const specialistQuestions = [3, 6, 8, 12];
-
-        const sumByQuestions = (questionNumbers) =>
-            questionNumbers.reduce((sum, qNum) => {
-                const index = qNum - 1; // в массиве answers индекс = номер - 1
-                return sum + (numericAnswers[index] || 0);
-            }, 0);
-
-        const finisher = sumByQuestions(finisherQuestions);      // score_finisher
-        const specialist = sumByQuestions(specialistQuestions);  // score_specialist
-
-        // сохраняем только то, что нужно для ролей
-        localStorage.setItem(
-            'testScores',
-            JSON.stringify({ finisher, specialist })
-        );
-
-        // переходим на страницу результатов
-        window.location.href = 'resulsts.html';
-    }
-});
     renderQuestion();
 });
