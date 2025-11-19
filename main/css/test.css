@@ -292,3 +292,14 @@ body {
   }
 }
 
+@media (min-width: 1024px) {
+  .registration-card {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-width: 1070px;
+    width: 310%;
+    padding: 40px 60px;
+  }
+}
+
