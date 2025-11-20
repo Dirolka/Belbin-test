@@ -20,37 +20,39 @@ document.addEventListener('DOMContentLoaded', () => {
     const questionTextEl = document.getElementById('questionText');
     const progressEl = document.getElementById('progress');
     const prevBtn = document.getElementById('prevBtn');
+    const answerBtns = document.querySelectorAll('#answers button');
 
     function renderQuestion() {
-        questionTextEl.textContent = questions[currentIndex];
-        progressEl.textContent = `${currentIndex + 1} из ${questions.length}`;
+        // плавное исчезновение и появление
+        questionTextEl.parentElement.classList.remove('show');
+        setTimeout(() => {
+            questionTextEl.textContent = questions[currentIndex];
+            progressEl.textContent = `${currentIndex + 1} из ${questions.length}`;
 
-        const radios = document.querySelectorAll('input[name="answer"]');
-        radios.forEach((r) => {
-            r.checked = answers[currentIndex] === r.value;
-        });
+            // сброс выделений
+            answerBtns.forEach(btn => btn.classList.remove('selected'));
 
-        prevBtn.disabled = currentIndex === 0;
+            // если уже отвечали — выделяем кнопку
+            if (answers[currentIndex] !== null) {
+                const btnToSelect = Array.from(answerBtns).find(btn => btn.dataset.value == answers[currentIndex]);
+                if (btnToSelect) btnToSelect.classList.add('selected');
+            }
+
+            prevBtn.disabled = currentIndex === 0;
+
+            questionTextEl.parentElement.classList.add('show');
+        }, 150);
     }
 
-    function getSelectedAnswer() {
-        const selected = document.querySelector('input[name="answer"]:checked');
-        return selected ? selected.value : null;
-    }
-
-    function goNextIfPossible() {
-        const answer = getSelectedAnswer();
-        if (answer === null) {
-            return;
-        }
-
-        answers[currentIndex] = answer;
+    function goNext(value) {
+        answers[currentIndex] = value;
 
         if (currentIndex < questions.length - 1) {
             currentIndex++;
             renderQuestion();
         } else {
-            const numericAnswers = answers.map((a) => Number(a) || 0);
+            // Подсчет результатов
+            const numericAnswers = answers.map(a => Number(a) || 0);
 
             const finisherQuestions = [1, 2, 4, 5, 7, 9, 10, 11];
             const specialistQuestions = [3, 6, 8, 12];
@@ -64,44 +66,29 @@ document.addEventListener('DOMContentLoaded', () => {
             const finisher = sumByQuestions(finisherQuestions);
             const specialist = sumByQuestions(specialistQuestions);
 
-            localStorage.setItem(
-                'testScores',
-                JSON.stringify({ finisher, specialist })
-            );
-
-            window.location.href = 'resulsts.html';
+            localStorage.setItem('testScores', JSON.stringify({ finisher, specialist }));
+            window.location.href = 'results.html';
         }
     }
 
     prevBtn.addEventListener('click', () => {
-        const answer = getSelectedAnswer();
-        if (answer !== null) {
-            answers[currentIndex] = answer;
-        }
-
         if (currentIndex > 0) {
-            if (autoNextTimeoutId !== null) {
-                clearTimeout(autoNextTimeoutId);
-                autoNextTimeoutId = null;
-            }
             currentIndex--;
             renderQuestion();
         }
     });
 
-    let autoNextTimeoutId = null;
+    // События для кнопок
+    answerBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // подсветка выбранной кнопки
+            answerBtns.forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
 
-    const answerRadios = document.querySelectorAll('input[name="answer"]');
-    answerRadios.forEach((radio) => {
-        radio.addEventListener('change', () => {
-            if (autoNextTimeoutId !== null) {
-                clearTimeout(autoNextTimeoutId);
-            }
-
-            autoNextTimeoutId = setTimeout(() => {
-                goNextIfPossible();
-                autoNextTimeoutId = null;
-            }, 1100);
+            // автоматический переход через 0.8 секунды
+            setTimeout(() => {
+                goNext(btn.dataset.value);
+            }, 800);
         });
     });
 
