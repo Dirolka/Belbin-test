@@ -38,21 +38,29 @@ body {
 }
 
 .brand-logo {
-    height: 64px;
-    object-fit: contain;
+  height: 64px;
+  width: auto;
+  object-fit: contain;
+  transition: transform 0.3s ease; /* плавность */
 }
 
+.brand-logo:hover {
+  transform: scale(1.08); /* увеличение на 8% */
+}
+
+/* Typography */
 .title {
-    font-size: 36px;
-    font-weight: 700;
-    color: #fff;
-    margin: 0;
+  font-size: 36px;
+  font-weight: 700;
+  margin: 0 0 8px;
 }
 
 .subtitle {
-    font-size: 16px;
-    color: rgba(255, 255, 255, 0.9);
-    margin-top: 8px;
+  font-size: 16px;
+  font-weight: 400;
+  margin: 0;
+  max-width: 560px;
+  opacity: 0.9;
 }
 
 /* Test Card */
@@ -77,12 +85,9 @@ body {
 }
 
 .progress-bar {
-    width: 100%;
-    height: 6px;
-    background: #f0f0f0;
-    border-radius: 3px;
-    overflow: hidden;
+    background: #5f2af1 !important;
 }
+
 
 .progress-fill {
     height: 100%;
