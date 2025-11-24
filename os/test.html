@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCQ Тест</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .option {
+            transition: all 0.2s ease;
+        }
+        .option:hover {
+            transform: translateX(5px);
+        }
+        .option input:checked + label {
+            background-color: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen py-12 px-4">
+    <div class="max-w-2xl mx-auto">
+        <div class="bg-white rounded-xl shadow-md overflow-hidden mb-8">
+            <div class="p-6">
+                <!-- Progress Bar -->
+                <div class="mb-6">
+                    <div class="flex justify-between mb-1">
+                        <span class="text-sm font-medium text-gray-700">Вопрос <span id="current-question">1</span> из <span id="total-questions">5</span></span>
+                        <span class="text-sm font-medium text-gray-700"><span id="score">0</span> из <span id="max-score">5</span></span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full" style="width: 20%"></div>
+                    </div>
+                </div>
+                
+                <!-- Question -->
+                <h2 id="question-text" class="text-xl font-semibold text-gray-800 mb-6">Тут будет текст вопроса</h2>
+                
+                <!-- Options -->
+                <div id="options-container" class="space-y-3 mb-8">
+                    <!-- Options will be added here by JavaScript -->
+                </div>
+                
+                <!-- Navigation Buttons -->
+                <div class="flex items-center justify-between gap-2 pt-4 border-t border-gray-100">
+                    <button id="prev-btn" class="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium rounded-lg disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                        Назад
+                    </button>
+                    <button id="finish-btn" class="px-4 py-2 text-red-600 border border-red-200 rounded-lg hover:bg-red-50 font-medium">
+                        Завершить
+                    </button>
+                    <button id="next-btn" class="px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
+                        Далее
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Results -->
+        <div id="results" class="hidden bg-white rounded-xl shadow-md overflow-hidden p-6 text-center">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Результаты теста</h2>
+            <div class="text-5xl font-bold text-blue-600 mb-4"><span id="final-score">0</span>/<span id="total-questions-final">5</span></div>
+            <p id="result-message" class="text-gray-600 mb-6"></p>
+            <div class="flex justify-center gap-3 mb-4">
+                <button id="review-btn" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium">
+                    Review
+                </button>
+                <button id="restart-btn" class="px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
+                    Пройти тест снова
+                </button>
+            </div>
+            <div id="review-list" class="hidden mt-4 text-left space-y-4 max-h-[60vh] overflow-y-auto"></div>
+        </div>
+    </div>
+
+    <script>
+        // Questions about operating systems and Linux commands
+        const questions = [
+            {
+                question: "What is a packet?",
+                options: [
+                    "A unit of data transmitted over a network",
+                    "A type of file system",
+                    "A type of process",
+                    "A type of device driver"
+                ],
+                correct: 0
+            },
+            {
+                question: "Which command will allow you to change to a directory located in the root directory?",
+                options: [
+                    "cd /",
+                    "cd |",
+                    "cd ..",
+                    "cd ~"
+                ],
+                correct: 0
+            },
+            {
+                question: "What is the command to list all files and directories in a directory?",
+                options: [
+                    "ls -d",
+                    "ls -a",
+                    "ls -r",
+                    "ls -I"
+                ],
+                correct: 1
+            },
+            {
+                question: "Which of the following is NOT a type of file organization?",
+                options: [
+                    "Direct",
+                    "Sequential",
+                    "All of the above are types of file organization",
+                    "Indexed"
+                ],
+                correct: 2
+            },
+            {
+                question: "Which processor command is used to terminate a process immediately?",
+                options: [
+                    "stop",
+                    "terminate",
+                    "exit",
+                    "kill"
+                ],
+                correct: 3
+            },
+            {
+                question: "Which command is used to move a file in Linux?",
+                options: [
+                    "move",
+                    "mv",
+                    "cp",
+                    "rename"
+                ],
+                correct: 1
+            },
+            {
+                question: "Which of the following file systems is commonly used in Linux",
+                options: [
+                    "FAT32",
+                    "NTFS",
+                    "HFS+",
+                    "EXT4"
+                ],
+                correct: 3
+            },
+            {
+                question: "Which of the following commands will allow you to change to the previous directory you were in?",
+                options: [
+                    "cd /",
+                    "cd ~",
+                    "cd ..",
+                    "cd -"
+                ],
+                correct: 3
+            },
+            {
+                question: "What does the command \"find/-name \"txt -type f-mtime +7\" do in Linux",
+                options: [
+                    "It searches for files in the current directory with a modification time greater than 7 days ago and a .txt extension",
+                    "It searches for files in the root directory with a modification time greater than 7 days ago and a .txt extension",
+                    "It searches for files in the root directory with a modification time greater than 7 days ago and a .txt or .text extension",
+                    "It searches for directories in the root directory with a modification time greater than 7 days ago and a .txt extension"
+                ],
+                correct: 1
+            },
+            {
+                question: "What does the command \"sudo\" do in Linux?",
+                options: [
+                    "It allows a user to run commands with root privileges.",
+                    "It displays the contents of a file.",
+                    "It deletes a file",
+                    "It creates a new user account"
+                ],
+                correct: 0
+            },
+            {
+                question: "Which command is used to change the ownership of a file in Linux?",
+                options: [
+                    "chmod",
+                    "chown",
+                    "cp",
+                    "mv"
+                ],
+                correct: 1
+            },
+            {
+                question: "Which command is used to list the files and directories in a directory?",
+                options: [
+                    "ls",
+                    "cd",
+                    "mkdir",
+                    "rm"
+                ],
+                correct: 0
+            },
+            {
+                question: "What does the \"grep\" command do?",
+                options: [
+                    "It searches for a specific text within a file.",
+                    "It compresses files and directories.",
+                    "It creates a new directory",
+                    "It removes a file or directory."
+                ],
+                correct: 0
+            },
+            {
+                question: "What is the purpose of the \"bzip2\" command?",
+                options: [
+                    "To create a ZIP archive with bzip2 compression",
+                    "To list the contents of a file that has been compressed with bzip2",
+                    "To decompress a file that has been compressed with bzip2",
+                    "To compress a file using bzip2 compression"
+                ],
+                correct: 3
+            },
+            {
+                question: "What is the purpose of the \"df\" command in Linux?",
+                options: [
+                    "to check the status of network connections",
+                    "To display the contents of a file or directory",
+                    "To view system resource usage information",
+                    "To display information about mounted filesystems and their available space"
+                ],
+                correct: 3
+            },
+            {
+                question: "Which command is used to display the IP address of the computer?",
+                options: [
+                    "netstat",
+                    "netconfig",
+                    "ipconfig",
+                    "ifconfig"
+                ],
+                correct: 3
+            },
+            {
+                question: "What is the output of the following command? grep -v \"Linux\" file.txt",
+                options: [
+                    "Deletes the lines not containing \"Linux\" in file.txt",
+                    "Displays only the lines not containing \"Linux\" in file.txt",
+                    "Deletes the lines containing \"Linux\" in file.txt",
+                    "Displays only the lines containing \"Linux\" in file.txt"
+                ],
+                correct: 1
+            },
+            {
+                question: "Which of the following is NOT a type of network protocol?",
+                options: [
+                    "TCP/IP",
+                    "SMTP",
+                    "HTTP",
+                    "All of the above are types of network protocols"
+                ],
+                correct: 3
+            },
+            {
+                question: "What is the output of the following command? sort -r file.txt",
+                options: [
+                    "Renames the file",
+                    "Sorts the file in random order",
+                    "Deletes the file",
+                    "Sorts the file in reverse order"
+                ],
+                correct: 3
+            },
+            {
+                question: "Which command is used to display the disk usage of files and directories in a human-readable format?",
+                options: [
+                    "df -h",
+                    "du -h",
+                    "disk -h",
+                    "ls -h"
+                ],
+                correct: 0
+            },
+            {
+                question: "What is the purpose of the \"sort\" command in Linux?",
+                options: [
+                    "It displays the last few lines of a file",
+                    "It sorts the contents of a file or input stream in alphabetical order",
+                    "It searches for a specific text pattern in a file or input stream",
+                    "It compresses one or more files into a single archive"
+                ],
+                correct: 1
+            },
+            {
+                question: "What is the difference between a file and a directory in Linux?",
+                options: [
+                    "A file is read-only while a directory is read-write",
+                    "A file cannot be deleted while a directory can be deleted.",
+                    "A file is a collection of data while a directory is a container for files and other directories",
+                    "A file contains only text while a directory contains multimedia files"
+                ],
+                correct: 2
+            },
+            {
+                question: "Which command is used to view the process status in Linux?",
+                options: [
+                    "cp",
+                    "ps",
+                    "mv",
+                    "ls"
+                ],
+                correct: 1
+            },
+            {
+                question: "What is the purpose of the \"tar\" command in Linux?",
+                options: [
+                    "To create a compressed archive of files and directories",
+                    "To change the ownership of a file or directory",
+                    "To display the contents of a file or directory",
+                    "To search for a specific pattern within a file or directory"
+                ],
+                correct: 0
+            },
+            {
+                question: "",
+                options: [
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                correct: 1
+            },
+            {
+                question: "What does the 'df' command do in Linux?",
+                options: [
+                    "Displays the list of currently running processes",
+                    "Shows the disk space usage of the file system",
+                    "Shows the current user's home directory",
+                    "Shows the amount of free memory in the system"
+                ],
+                correct: 1
+            },
+            {
+                question: "What is the command used to display the contents of a directory?",
+                options: ["pwd", "mv", "ls", "cd"],
+                correct: 2
+            },
+            {
+                question: "Which command is used to create a new directory?",
+                options: ["mkfile", "newdir", "touchdir", "mkdir"],
+                correct: 3
+            },
+            {
+                question: "Which command can be used to search for help on a specific topic in Linux?",
+                options: ["man", "info", "help", "apropos"],
+                correct: 3
+            },
+            {
+                question: "What is the command used to create a new file in Linux?",
+                options: ["touch", "newfile", "addfile", "mkfile"],
+                correct: 0
+            },
+            {
+                question: "Which command is used to create a new empty file?",
+                options: ["touch", "chmod", "cat"],
+                correct: 0
+            },
+            {
+                question: "What does the 'grep' command do?",
+                options: [
+                    "It searches for a specific text within a file.",
+                    "It compresses files and directories.",
+                    "It creates a new directory."
+                ],
+                correct: 0
+            },
+            {
+                question: "Which of the following is an advantage of a distributed operating system?",
+                options: [
+                    "It is less complex than a centralized system",
+                    "It is easier to implement than a centralized system",
+                    "It provides stronger security than a centralized system",
+                    "It allows for better resource utilization"
+                ],
+                correct: 3
+            },
+            {
+                question: "Which of the following is a disadvantage of a monolithic kernel architecture?",
+                options: [
+                    "It is less secure than a microkernel architecture",
+                    "It is less efficient than a microkernel architecture",
+                    "It is more difficult to add new features or drivers",
+                    "It provides less protection against crashes and failures"
+                ],
+                correct: 2
+            },
+            {
+                question: "Which of the following is NOT a state in the process life cycle?",
+                options: ["Sleeping", "Running", "Waiting", "Ready"],
+                correct: 0
+            },
+            {
+                question: "Which of the following is NOT a type of operating system?",
+                options: [
+                    "Batch processing operating system",
+                    "Network operating system (NOS)",
+                    "Real-time operating system (RTOS)",
+                    "Mobile operating system",
+                    "All of the above are types of operating systems"
+                ],
+                correct: 4
+            },
+            {
+                question: "Which of the following is NOT a priority-based scheduling algorithm?",
+                options: [
+                    "Round Robin (RR)",
+                    "All of the above are priority-based",
+                    "Priority Scheduling",
+                    "Highest Response Ratio Next (HRRN)"
+                ],
+                correct: 0
+            },
+            {
+                question: "______ on a file allows a user to run an executable binary file in a manner that provides them additional (temporary) group access.",
+                options: [
+                    "setuid",
+                    "metadata",
+                    "setgid",
+                    "sticky bit permission"
+                ],
+                correct: 2
+            },
+            {
+                question: "Which command is used to delete a file?",
+                options: ["cp", "rm", "mv", "ls"],
+                correct: 1
+            },
+            {
+                question: "Which of the following commands will allow you to change to a directory using an absolute path?",
+                options: ["cd /", "cd ..", "cd ~", "cd -"],
+                correct: 0
+            },
+            {
+                question: "Which of the following is NOT a characteristic of a device driver?",
+                options: [
+                    "It is loaded into memory when the device is first used",
+                    "It communicates with the device controller",
+                    "It is part of the operating system kernel",
+                    "It is specific to a particular device"
+                ],
+                correct: 2
+            },
+            {
+                question: "What is the purpose of the 'tar' command in Linux?",
+                options: [
+                    "To create a compressed archive of files and directories",
+                    "To change the ownership of a file or directory",
+                    "To display the contents of a file or directory",
+                    "To search for a specific text within a file"
+                ],
+                correct: 0
+            },
+            {
+                question: "Which of the following is NOT a type of file organization?",
+                options: [
+                    "Direct",
+                    "Sequential",
+                    "All of the above are types of file organization",
+                    "Indexed"
+                ],
+                correct: 2
+            },
+            {
+                question: "Which processor command is used to terminate a process immediately?",
+                options: [
+                    "stop",
+                    "terminate",
+                    "exit",
+                    "kill"
+                ],
+                correct: 3
+            },
+            {
+                question: "Which command is used to move a file in Linux?",
+                options: [
+                    "move",
+                    "mv",
+                    "cp",
+                    "rename"
+                ],
+                correct: 1
+            },
+            {
+                question: "To see disk usage of directories and files, which command is used?",
+                options: [
+                    "du -h",
+                    "stat",
+                    "df -h",
+                    "ls -lh"
+                ],
+                correct: 0
+            },
+            {
+                question: "How do you list files that do NOT start with 'temp'?",
+                options: [
+                    "ls | grep '^temp'",
+                    "ls | grep 'temp'",
+                    "ls -v temp",
+                    "ls | grep -v '^temp'"
+                ],
+                correct: 3
+            },
+            {
+                question: "How do you list files sorted by modification time, newest first, including hidden files?",
+                options: [
+                    "ls -lat",
+                    "ls -lt",
+                    "ls -lh",
+                    "ls -la"
+                ],
+                correct: 0
+            },
+            {
+                question: "The most common Linux bootloader is:",
+                options: [
+                    "systemd",
+                    "BIOS",
+                    "BOOT.EXE",
+                    "GRUB"
+                ],
+                correct: 3
+            },
+            {
+                question: "How do you search all .txt files in Assignment3_Ann?",
+                options: [
+                    "find . -name '*.txt'",
+                    "locate '*.txt'",
+                    "ls *.txt",
+                    "grep '*.txt'"
+                ],
+                correct: 0
+            },
+            {
+                question: "The shell of an operating system is:",
+                options: [
+                    "The hardware interface",
+                    "The kernel",
+                    "The device driver",
+                    "The user interface"
+                ],
+                correct: 3
+            },
+            {
+                question: "What does ../file.txt refer to?",
+                options: [
+                    "A file in the parent directory",
+                    "A file in the current directory",
+                    "A file in the root directory",
+                    "A file in /tmp"
+                ],
+                correct: 0
+            },
+            {
+                question: "The mv command is used to:",
+                options: [
+                    "Mount a disk",
+                    "Verify memory",
+                    "Manage variables",
+                    "Move or rename files"
+                ],
+                correct: 3
+            },
+            {
+                question: "To find the process ID (PID) of a running program:",
+                options: [
+                    "idproc",
+                    "pid",
+                    "ps or pgrep",
+                    "procid"
+                ],
+                correct: 2
+            },
+            {
+                question: "To check CPU, memory, and process usage in real-time, which command is used?",
+                options: [
+                    "ps",
+                    "htop",
+                    "top",
+                    "free"
+                ],
+                correct: 2
+            },
+            {
+                question: "How would you sort processes by user and then by memory usage descending?",
+                options: [
+                    "top -du",
+                    "ps aux | sort -user",
+                    "ps aux --sort user",
+                    "ps aux --sort user,%mem"
+                ],
+                correct: 3
+            },
+            {
+                question: "How do you create file3.txt with the text \"This file was created by Ann\"?",
+                options: [
+                    "nano file3.txt \"This file was created by Ann\"",
+                    "touch file3.txt \"This file was created by Ann\"",
+                    "echo \"This file was created by Ann\" > file3.txt",
+                    "cat file3.txt"
+                ],
+                correct: 2
+            },
+            {
+                question: "The program counter in PCB stores:",
+                options: [
+                    "The address of the stack frame",
+                    "The address of the next instruction to execute",
+                    "The process priority",
+                    "The process ID"
+                ],
+                correct: 1
+            },
+            {
+                question: "How do you display line numbers along with matched lines in grep?",
+                options: [
+                    "grep -r keyword file",
+                    "grep -p keyword file",
+                    "grep -n keyword file",
+                    "grep -t \"keyword\" file"
+                ],
+                correct: 2
+            },
+            {
+                question: "How do you list files including hidden, sorted by extension?",
+                options: [
+                    "ls -la",
+                    "ls -lat",
+                    "ls -lX",
+                    "ls -lh"
+                ],
+                correct: 2
+            },
+            {
+                question: "The most common shell in Linux is:",
+                options: [
+                    "C shell",
+                    "Bourne shell",
+                    "Korn shell",
+                    "Bash shell"
+                ],
+                correct: 3
+            },
+            {
+                question: "To update the package index on Ubuntu, use:",
+                options: [
+                    "yum update",
+                    "apt install",
+                    "apt update",
+                    "dpkg -i"
+                ],
+                correct: 2
+            },
+            {
+                question: "The program that interprets user commands and passes them to the system is:",
+                options: [
+                    "Editor",
+                    "Shell",
+                    "Kernel",
+                    "Compiler"
+                ],
+                correct: 1
+            },
+            {
+                question: "To display permissions of all files in a directory, use:",
+                options: [
+                    "ls -a",
+                    "ls -l",
+                    "showperm",
+                    "ls"
+                ],
+                correct: 1
+            },
+            {
+                question: "How do you search only for directories with find?",
+                options: [
+                    "find . -type d",
+                    "find ./ -folder",
+                    "find / -type f",
+                    "find / -dir -D"
+                ],
+                correct: 0
+            },
+            {
+                question: "How do you copy about_me.txt to backup.txt inside docs?",
+                options: [
+                    "mv about_me.txt docs/backup.txt",
+                    "touch docs/backup.txt",
+                    "cp about_me.txt docs/backup.txt",
+                    "nano docs/backup.txt"
+                ],
+                correct: 2
+            },
+            {
+                question: "What does a single dot . represent?",
+                options: [
+                    "Root directory",
+                    "Home directory",
+                    "Parent directory",
+                    "Current directory"
+                ],
+                correct: 3
+            },
+            {
+                question: "How do you list only directories in the current folder?",
+                options: [
+                    "ls -R",
+                    "ls -d */",
+                    "ls -d /",
+                    "ls -a"
+                ],
+                correct: 1
+            },
+            {
+                question: "After rebooting, your system drops to the GRUB menu instead of booting normally. What is the first step to troubleshoot?",
+                options: [
+                    "Check GRUB configuration and boot entries",
+                    "Run systemctl start default.target",
+                    "Reinstall Linux",
+                    "Delete /etc/fstab"
+                ],
+                correct: 0
+            },
+            {
+                question: "The process management component handles:",
+                options: [
+                    "File allocation",
+                    "User interfaces",
+                    "Device drivers",
+                    "Creation, scheduling, and termination of processes"
+                ],
+                correct: 3
+            },
+            {
+                question: "What does awk 'print $1' file.txt do?",
+                options: [
+                    "Prints only lines with one word",
+                    "Prints the last column of each line",
+                    "Prints the first column of each line",
+                    "Prints the whole line"
+                ],
+                correct: 2
+            },
+            {
+                question: "CPU registers saved in the PCB are used:",
+                options: [
+                    "To execute I/O operations",
+                    "To store file descriptors",
+                    "Only for debugging",
+                    "To resume process execution after a context switch"
+                ],
+                correct: 3
+            },
+            {
+                question: "How do you list files recursively in all subdirectories?",
+                options: [
+                    "ls -R",
+                    "ls -d",
+                    "ls -s",
+                    "ls -l"
+                ],
+                correct: 0
+            },
+            {
+                question: "To change the current directory, you use:",
+                options: [
+                    "mv",
+                    "path",
+                    "cd",
+                    "change"
+                ],
+                correct: 2
+            },
+            {
+                question: "A directory is used to:",
+                options: [
+                    "Manage memory",
+                    "Store file names and metadata",
+                    "Control devices",
+                    "Store system files only"
+                ],
+                correct: 1
+            },
+            {
+                question: "The process state in PCB indicates:",
+                options: [
+                    "Whether the process is Ready, Running, Waiting, or Terminated",
+                    "Memory address of its data section",
+                    "The line the process is executing",
+                    "CPU usage percentage"
+                ],
+                correct: 0
+            },
+            {
+                question: "What does ~/Documents refer to?",
+                options: [
+                    "Documents folder in the current directory",
+                    "Documents folder in your home directory",
+                    "The root Documents folder",
+                    "A temporary documents folder"
+                ],
+                correct: 1
+            },
+            {
+                question: "How do you open file1.txt in a text editor and write your info?",
+                options: [
+                    "ls file1.txt",
+                    "touch file1.txt",
+                    "cat file1.txt",
+                    "nano file1.txt"
+                ],
+                correct: 3
+            },
+            {
+                question: "How do you search recursively for a keyword inside all files in a directory?",
+                options: [
+                    "grep keyword *",
+                    "find / -name keyword",
+                    "grep -r 'keyword' /path/to/directory",
+                    "locate keyword"
+                ],
+                correct: 2
+            },
+            {
+                question: "A process is:",
+                options: [
+                    "Only kernel code",
+                    "An instance of a program in execution",
+                    "A program stored on disk",
+                    "A thread of execution"
+                ],
+                correct: 1
+            },
+            {
+                question: "To display all running processes, use:",
+                options: [
+                    "ps",
+                    "showproc",
+                    "run",
+                    "jobs"
+                ],
+                correct: 0
+            },
+            {
+                question: "To search for text inside files:",
+                options: [
+                    "search",
+                    "grep",
+                    "locate",
+                    "find"
+                ],
+                correct: 1
+            },
+            {
+                question: "How do you overwrite file2.txt with new text?",
+                options: [
+                    "cat file2.txt",
+                    "nano file2.txt",
+                    "echo \"new text\" >> file2.txt",
+                    "echo \"new text\" > file2.txt"
+                ],
+                correct: 3
+            },
+            {
+                question: "How do you search for a file named file1.txt in /home directory using find?",
+                options: [
+                    "find /home -name file1.txt",
+                    "grep file1.txt /home",
+                    "locate file1.txt",
+                    "find . -name file1.txt"
+                ],
+                correct: 0
+            },
+            {
+                question: "Which of the following file systems is commonly used in Linux?",
+                options: [
+                    "FAT32",
+                    "NTFS",
+                    "HFS+",
+                    "EXT4"
+                ],
+                correct: 3
+            },
+
+        ];
+
+        // DOM Elements
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const currentQuestionEl = document.getElementById('current-question');
+        const totalQuestionsEl = document.getElementById('total-questions');
+        const progressBar = document.getElementById('progress-bar');
+        const scoreEl = document.getElementById('score');
+        const maxScoreEl = document.getElementById('max-score');
+        const resultsDiv = document.getElementById('results');
+        const finalScoreEl = document.getElementById('final-score');
+        const totalQuestionsFinalEl = document.getElementById('total-questions-final');
+        const resultMessageEl = document.getElementById('result-message');
+        const restartBtn = document.getElementById('restart-btn');
+        const finishBtn = document.getElementById('finish-btn');
+        const reviewBtn = document.getElementById('review-btn');
+        const reviewList = document.getElementById('review-list');
+
+        // Quiz state
+        let currentQuestion = 0;
+        let score = 0;
+        let userAnswers = new Array(questions.length).fill(null);
+
+        // Initialize quiz
+        function initQuiz() {
+            totalQuestionsEl.textContent = questions.length;
+            totalQuestionsFinalEl.textContent = questions.length;
+            maxScoreEl.textContent = questions.length;
+            showQuestion();
+        }
+
+        // Show current question
+        function showQuestion() {
+            const question = questions[currentQuestion];
+            questionText.textContent = question.question;
+            currentQuestionEl.textContent = currentQuestion + 1;
+
+            // Update progress bar
+            const progress = ((currentQuestion) / questions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+
+            // Clear previous options
+            optionsContainer.innerHTML = '';
+
+            // Create and shuffle indices of options so answers appear in random order
+            const indices = question.options.map((_, i) => i);
+            for (let i = indices.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [indices[i], indices[j]] = [indices[j], indices[i]];
+            }
+
+            // Add new options in shuffled order
+            indices.forEach((originalIndex, displayIndex) => {
+                const option = question.options[originalIndex];
+                const optionId = `option-${displayIndex}`;
+                const isChecked = userAnswers[currentQuestion] === originalIndex;
+
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                optionDiv.innerHTML = `
+                    <input type="radio" id="${optionId}" name="option" value="${originalIndex}" 
+                           class="hidden" ${isChecked ? 'checked' : ''}>
+                    <label for="${optionId}" class="flex items-center p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                        <span class="font-medium">${String.fromCharCode(65 + displayIndex)}.</span>
+                        <span class="ml-3">${option}</span>
+                    </label>
+                `;
+
+                // Add event listener to update user's answer
+                const input = optionDiv.querySelector('input');
+                input.addEventListener('change', () => {
+                    const chosenIndex = parseInt(input.value);
+                    userAnswers[currentQuestion] = chosenIndex;
+
+                    // Recalculate score based on all answers, so порядок не влияет
+                    score = userAnswers.reduce((acc, ans, qIndex) => {
+                        return acc + (ans === questions[qIndex].correct ? 1 : 0);
+                    }, 0);
+                    scoreEl.textContent = score;
+                });
+
+                optionsContainer.appendChild(optionDiv);
+
+                // Restore selected option if it was chosen earlier
+                if (userAnswers[currentQuestion] === originalIndex) {
+                    input.checked = true;
+                }
+            });
+
+            // Update navigation buttons
+            prevBtn.disabled = currentQuestion === 0;
+            nextBtn.textContent = currentQuestion === questions.length - 1 ? 'Завершить' : 'Далее';
+        }
+
+        // Event listeners
+        prevBtn.addEventListener('click', () => {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                showQuestion();
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            // Разрешаем переход к следующему вопросу без ответа
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                showQuestion();
+            } else {
+                // Переход к результатам, даже если есть неотвеченные вопросы
+                showResults();
+            }
+        });
+
+        // Finish quiz early
+        finishBtn.addEventListener('click', () => {
+            const confirmFinish = confirm('Вы уверены, что хотите закончить тест? Неотвеченные вопросы будут считаться неправильными.');
+            if (!confirmFinish) return;
+            showResults();
+        });
+
+        // Show quiz results
+        function showResults() {
+            document.querySelector('.max-w-2xl > div:first-child').classList.add('hidden');
+            resultsDiv.classList.remove('hidden');
+            finalScoreEl.textContent = score;
+            
+            // Calculate percentage
+            const percentage = (score / questions.length) * 100;
+            
+            // Show result message based on score
+            if (percentage >= 80) {
+                resultMessageEl.textContent = 'Отличный результат! Вы отлично справились с тестом!';
+            } else if (percentage >= 50) {
+                resultMessageEl.textContent = 'Хороший результат! Есть куда стремиться!';
+            } else {
+                resultMessageEl.textContent = 'Попробуйте еще раз! Вы можете лучше!';
+            }
+
+            // Build review list (скрыт по умолчанию, показывается кнопкой Review)
+            reviewList.innerHTML = '';
+            questions.forEach((q, index) => {
+                const userAnswerIndex = userAnswers[index];
+                const correctIndex = q.correct;
+                const isCorrect = userAnswerIndex === correctIndex;
+
+                const item = document.createElement('div');
+                item.className = `border rounded-lg p-4 ${isCorrect ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`;
+
+                const userText = userAnswerIndex !== null && userAnswerIndex !== undefined
+                    ? `${String.fromCharCode(65 + userAnswerIndex)}. ${q.options[userAnswerIndex]}`
+                    : 'Ответ не выбран';
+
+                const correctText = `${String.fromCharCode(65 + correctIndex)}. ${q.options[correctIndex]}`;
+
+                item.innerHTML = `
+                    <div class="font-semibold mb-2">Вопрос ${index + 1}: ${q.question}</div>
+                    <div class="text-sm mb-1"><span class="font-medium">Ваш ответ:</span> ${userText}</div>
+                    <div class="text-sm"><span class="font-medium">Правильный ответ:</span> ${correctText}</div>
+                `;
+
+                reviewList.appendChild(item);
+            });
+
+            reviewList.classList.add('hidden');
+            reviewBtn.textContent = 'Review';
+        }
+
+        // Toggle review visibility
+        reviewBtn.addEventListener('click', () => {
+            const isHidden = reviewList.classList.contains('hidden');
+            if (isHidden) {
+                reviewList.classList.remove('hidden');
+                reviewBtn.textContent = 'Скрыть review';
+            } else {
+                reviewList.classList.add('hidden');
+                reviewBtn.textContent = 'Review';
+            }
+        });
+
+        // Restart quiz
+        restartBtn.addEventListener('click', () => {
+            currentQuestion = 0;
+            score = 0;
+            userAnswers = new Array(questions.length).fill(null);
+            scoreEl.textContent = '0';
+            resultsDiv.classList.add('hidden');
+            document.querySelector('.max-w-2xl > div:first-child').classList.remove('hidden');
+            showQuestion();
+        });
+
+        // Initialize the quiz when the page loads
+        document.addEventListener('DOMContentLoaded', initQuiz);
+    </script>
+</body>
+</html>
