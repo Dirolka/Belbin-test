@@ -158,6 +158,19 @@
                 body: JSON.stringify(payload),
             });
 
+            // Проверяем статус ответа
+            if (!resp.ok) {
+                // Пытаемся прочитать JSON с ошибкой
+                try {
+                    const errorData = await resp.json();
+                    errorBox.textContent = errorData.error || `Ошибка сервера (${resp.status})`;
+                } catch {
+                    errorBox.textContent = `Ошибка сервера (${resp.status}). Проверь, что сервер запущен на 147.45.224.200:8000`;
+                }
+                errorBox.style.display = 'block';
+                return;
+            }
+
             const data = await resp.json();
 
             if (!data.success) {
@@ -171,7 +184,9 @@
             refLink.textContent = data.referral_link;
             refLink.href = data.referral_link;
         } catch (err) {
-            errorBox.textContent = 'Ошибка соединения с сервером. Попробуй ещё раз.';
+            // Ошибка сети или CORS
+            console.error('Ошибка запроса:', err);
+            errorBox.textContent = 'Не удалось подключиться к серверу. Убедись, что сервер запущен на 147.45.224.200:8000 и порт открыт.';
             errorBox.style.display = 'block';
         }
     });
