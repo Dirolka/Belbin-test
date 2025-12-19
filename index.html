@@ -123,13 +123,8 @@
             </div>
             <div class="field">
                 <label for="tg_username">Telegram username (без @)</label>
-                <input type="text" id="tg_username" name="tg_username" placeholder="username">
-                <div class="hint">Нужно, чтобы сгенерировать реферальную ссылку.</div>
-            </div>
-            <div class="field">
-                <label for="tg_id">Telegram ID</label>
-                <input type="text" id="tg_id" name="tg_id" placeholder="Например, 123456789" required>
-                <div class="hint">Можно узнать через специальных ботов в Telegram (например, @userinfobot).</div>
+                <input type="text" id="tg_username" name="tg_username" placeholder="username" required>
+                <div class="hint">По username будет строиться реферальная ссылка.</div>
             </div>
             <button type="submit">Получить реферальную ссылку</button>
         </form>
@@ -152,7 +147,6 @@
             name: document.getElementById('name').value.trim(),
             phone: document.getElementById('phone').value.trim(),
             tg_username: document.getElementById('tg_username').value.trim(),
-            tg_id: document.getElementById('tg_id').value.trim(),
         };
 
         try {
